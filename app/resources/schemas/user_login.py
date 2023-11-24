@@ -5,4 +5,4 @@ from app.resources.schemas.fields import UserField
 
 
 class UserLoginSchema(BaseSchema):
-    user: User = UserField(data_key='userName', required=True)
+    user: User = UserField(data_key='username', required=True)

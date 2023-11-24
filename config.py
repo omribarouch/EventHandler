@@ -1,12 +1,19 @@
 import os
+from datetime import timedelta
 from typing import Type
 
 
 class BaseConfig(object):
-    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI') or 'postgresql://your_username:your_password@localhost/your_database'
+    # SqlAlchemy configurations
+    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = 'top secret stuff'
 
+    # Redis configuration
+    REDIS_URI = 'redis://localhost:6379:0'
+
+    # JWT configurations
+    JWT_SECRET_KEY = 'top secret stuff'
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)
 
 class DevConfig(BaseConfig):
     pass

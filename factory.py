@@ -1,20 +1,16 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
+from flask_sqlalchemy import SQLAlchemy
 
-# from app.database.database import db
 from app.resources import register_main_blueprint
 from config import get_configuration
 
 
-def create_app() -> Flask:
-    app = Flask(__name__)
-    app.config.from_object(get_configuration())
+app = Flask(__name__)
+app.config.from_object(get_configuration())
 
-    jwt = JWTManager(app)
+db = SQLAlchemy(app)
 
-    # db.init_app(app)
-    # db.create_all()
+register_main_blueprint(app)
 
-
-    register_main_blueprint(app)
-    return app
+JWTManager(app)

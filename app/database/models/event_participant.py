@@ -1,22 +1,19 @@
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, VARCHAR
 from sqlalchemy.orm import relationship
-
-from app.database.base import Model
-from app.database.models.event import Event
-from app.database.models.user import User
+from factory import db
 
 
-class EventParticipant(Model):
+class EventParticipant(db.Model):
     __tablename__ = 'EventParticipant'
 
-    user_id: Column | int = Column('UserID', Integer, ForeignKey('User.id'), primary_key=True)
-    user: User = relationship('User')
-    event_id: Column | int = Column('EventID', Integer, ForeignKey('Event.id'), primary_key=True)
-    event: Event = relationship('Event')
+    username: Column | str = Column('Username', VARCHAR(20), ForeignKey('User.Username'), primary_key=True)
+    user: 'User' = relationship('User')
+    event_id: Column | int = Column('EventID', Integer, ForeignKey('Event.ID'), primary_key=True)
+    event: 'Event' = relationship('Event')
 
     def __init__(self,
-                 user: User,
-                 event: Event):
+                 user: 'User',
+                 event: 'Event'):
         self.user = user
         self.event = event
 

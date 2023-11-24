@@ -1,12 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 from sqlalchemy.ext.declarative import declarative_base
 
-BaseModel = declarative_base()
 
+class Model():
+    __abstract__ = True
 
-class Model(ABC):
-    @abstractmethod
     @property
     def __tablename__(self) -> str:
         pass

@@ -1,26 +1,26 @@
 import datetime
 
-from sqlalchemy import Column, Integer, Date, NVARCHAR, ForeignKey
+from sqlalchemy import Column, Integer, VARCHAR, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.util import hybridproperty
 
-from app.database.base import Model
 from app.database.models.event_participant import EventParticipant
-from app.database.models.user import User
+from factory import db
 
 
-class Event(Model):
-    __tablename__ = 'Event'
+class Event(db.Model):
+    __tablename__: str = 'Event'
 
     id: Column | int = Column('ID', Integer, primary_key=True, autoincrement=True)
-    name: Column | str = Column('Name', NVARCHAR(50), nullable=False)
-    description: Column | str = Column('Description', NVARCHAR(200), nullable=False)
-    location: Column | str = Column('Location', NVARCHAR(100), nullable=False)
-    date: Column | datetime.date = Column('Date', Date, nullable=False)
-    creation_time: Column | datetime.date = Column('CreationTime', Date,
-                                                   default=datetime.datetime.utcnow(), nullable=False)
-    creators: list[User] = relationship(User)
-    participants: list[User] = relationship(User, secondary=EventParticipant.__tablename__, backref='Event')
+    name: Column | str = Column('Name', VARCHAR(50), nullable=False)
+    description: Column | str = Column('Description', VARCHAR(200), nullable=False)
+    location: Column | str = Column('Location', VARCHAR(100), nullable=False, index=True)
+    date: Column | datetime.date = Column('Date', DateTime, nullable=False, index=True)
+    creation_time: Column | datetime.date = Column('CreationTime', DateTime,
+                                                   default=datetime.datetime.utcnow(), nullable=False, index=True)
+    participants: list['User'] = relationship('User', secondary=EventParticipant.__tablename__,
+                                              back_populates="events", lazy="select",
+                                              overlaps="user,event")
 
     def __init__(self,
                  name: str,
@@ -44,5 +44,5 @@ class Event(Model):
             'location': self.location,
             'date': str(self.date),
             'creationTime': str(self.creation_time),
-            'popularity': self.popularity
+            'participants': [participant.serialize() for participant in self.participants]
         }

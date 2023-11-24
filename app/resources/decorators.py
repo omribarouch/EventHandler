@@ -1,16 +1,15 @@
 from functools import wraps
+from http import HTTPStatus
 from typing import Type
 
 from flask import request
-from flask_api import status
 from marshmallow import EXCLUDE, ValidationError
 from marshmallow.schema import BaseSchema
 
 
 def load_schema(schema: Type[BaseSchema]):
-    def wrap(f):
-        @wraps(f)
-        def decorator(*args, **kwargs):
+    def decorator(f):
+        def wrap(*args, **kwargs):
             try:
                 schema_instance: dict = schema().load(
                     {
@@ -23,4 +22,8 @@ def load_schema(schema: Type[BaseSchema]):
 
                 return f(*args, **schema_instance)
             except ValidationError as e:
-                return {'error': e.messages}, status.HTTP_400_BAD_REQUEST
+                return {'error': e.messages}, HTTPStatus.BAD_REQUEST
+
+        return wrap
+
+    return decorator

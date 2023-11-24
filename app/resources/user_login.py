@@ -1,4 +1,5 @@
-from flask_api import status
+from http import HTTPStatus
+
 from flask_jwt_extended import create_access_token
 from flask_restful import Resource
 
@@ -10,4 +11,4 @@ from app.resources.schemas.user_login import UserLoginSchema
 class UserLoginApi(Resource):
     @load_schema(UserLoginSchema)
     def post(self, user: User, **kwargs):
-        return create_access_token(identity=user.user_name), status.HTTP_200_OK
+        return f'Bearer {create_access_token(identity=user.username)}', HTTPStatus.OK

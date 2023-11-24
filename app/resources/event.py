@@ -1,24 +1,37 @@
 import datetime
+import json
+from http import HTTPStatus
 
-from flask import g
-from flask_api import status
+from flask import current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource, abort
+from sqlalchemy.orm import Query
 
-from app.database.database import db
+from app.database.models.event_participant import EventParticipant
+from factory import db
 from app.database.models.event import Event
 from app.logger import logger
 from app.resources.decorators import load_schema
-from app.resources.schemas.event import GetEventSchema, PostEventSchema, PutEventSchema, DeleteEventSchema
+from app.resources.schemas.event import GetEventSchema, PostEventSchema, PutEventSchema, DeleteEventSchema, \
+    GetEventsSchema
 
 
-class EventApi(Resource):
-    @jwt_required
-    @load_schema(GetEventSchema)
-    def get(self, event: Event, **kwargs):
-        return event.serialize(), status.HTTP_200_OK
+class EventsApi(Resource):
+    @jwt_required()
+    @load_schema(GetEventsSchema)
+    def get(self, sort_by: str | None, order: str | None, location: str | None):
+        base_query: Query = db.session.query(Event).join(EventParticipant) \
+                             .filter(EventParticipant.username == get_jwt_identity())
 
-    @jwt_required
+        if location:
+            base_query.filter(Event.location == location)
+
+        if sort_by:
+            base_query.order_by(f'{sort_by} {order}')
+
+        return [event.serialize() for event in base_query.all()], HTTPStatus.OK
+
+    @jwt_required()
     @load_schema(PostEventSchema)
     def post(self, name: str, description: str, location: str, date: datetime.date):
         new_event: Event = Event(name=name,
@@ -29,15 +42,22 @@ class EventApi(Resource):
         try:
             db.session.add(new_event)
             db.session.commit()
-            return {'message': 'ok'}, status.HTTP_201_CREATED
+            return new_event.serialize(), HTTPStatus.CREATED
         except Exception:
             db.session.rollback()
             logger.exception('Failed to add event',
                              extra=dict(submitter=get_jwt_identity()))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR, error='Something went wrong while trying '
-                                                               'to add new event to the system')
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, error='Something went wrong while trying '
+                                                          'to add new event to the system')
 
-    @jwt_required
+
+class EventApi(Resource):
+    @jwt_required()
+    @load_schema(GetEventSchema)
+    def get(self, event: Event, **kwargs):
+        return event.serialize(), HTTPStatus.OK
+
+    @jwt_required()
     @load_schema(PutEventSchema)
     def put(self, event: Event, name: str, description: str, date: datetime.date, **kwargs):
         event.name = name or event.name
@@ -46,23 +66,26 @@ class EventApi(Resource):
 
         try:
             db.session.commit()
-            return {'message': 'ok'}, status.HTTP_200_OK
+            return event.serialize(), HTTPStatus.OK
         except Exception:
             db.session.rollback()
             logger.exception(f'Failed to update event #{event.id}',
                              extra=dict(event_id=event.id, submitter=get_jwt_identity()))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR, error=f'Something went wrong while trying '
-                                                               f'to update the event #{event.id}')
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, error=f'Something went wrong while trying '
+                                                          f'to update the event #{event.id}')
 
-    @jwt_required
+    @jwt_required()
     @load_schema(DeleteEventSchema)
     def delete(self, event: Event, **kwargs):
         try:
-            db.session.delete(event)
-            return {'message': 'ok'}, status.HTTP_200_OK
+            with current_app.app_context():
+                db.session.delete(event)
+                db.session.commit()
+            return {'message': 'ok'}, HTTPStatus.OK
         except Exception:
-            db.session.rollback()
+            with current_app.app_context():
+                db.session.rollback()
             logger.exception(f'Failed to delete event #{event.id}',
                              extra=dict(event_id=event.id, submitter=get_jwt_identity()))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR, error=f'Something went wrong while trying '
-                                                               f'to delete the event #{event.id}')
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, error=f'Something went wrong while trying '
+                                                          f'to delete the event #{event.id}')

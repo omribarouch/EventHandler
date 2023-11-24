@@ -1,26 +1,36 @@
-from sqlalchemy import Column, NVARCHAR
+from sqlalchemy import Column, VARCHAR
+from sqlalchemy.orm import relationship
 
 from app.database.base import Model
+from app.database.models.event_participant import EventParticipant
+from factory import db
 
 
-class User(Model):
+class User(db.Model):
     __tablename__ = 'User'
 
-    user_name: Column | str = Column('UserName', NVARCHAR(50), primary_key=True)
-    display_name: Column | str = Column('DisplayName', NVARCHAR(50), nullable=False)
-    password: Column | str = Column("Password", NVARCHAR(100), nullable=False)
+    username: Column | str = Column('Username', VARCHAR(20), primary_key=True)
+    password: Column | str = Column("Password", VARCHAR(20), nullable=False)
+    display_name: Column | str = Column('DisplayName', VARCHAR(30), nullable=False)
+    email: Column | str = Column('Email', VARCHAR(30), nullable=False)
+    events: list['Event'] = relationship('Event', secondary=EventParticipant.__tablename__,
+                                         back_populates="participants", lazy="select",
+                                         overlaps="event,user")
 
     def __init__(self,
-                 user_name: str,
+                 username: str,
+                 password: str,
                  display_name: str,
-                 password: str):
-        self.user_name = user_name
-        self.display_name = display_name
+                 email: str):
+        self.username = username
         self.password = password
+        self.display_name = display_name
+        self.email = email
 
     def serialize(self) -> dict:
         return {
-            'userName': self.user_name,
+            'username': self.username,
+            'password': self.password,
             'displayName': self.display_name,
-            'password': self.password
+            'email': self.email
         }
