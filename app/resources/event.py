@@ -2,6 +2,7 @@ import datetime
 
 from flask import g
 from flask_api import status
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource, abort
 
 from app.database.database import db
@@ -12,14 +13,17 @@ from app.resources.schemas.event import GetEventSchema, PostEventSchema, PutEven
 
 
 class EventApi(Resource):
+    @jwt_required
     @load_schema(GetEventSchema)
-    def get(self, event: Event, **kwargs) -> tuple[dict, int]:
+    def get(self, event: Event, **kwargs):
         return event.serialize(), status.HTTP_200_OK
 
+    @jwt_required
     @load_schema(PostEventSchema)
-    def post(self, name: str, description: str, date: datetime.date) -> tuple[dict, int]:
+    def post(self, name: str, description: str, location: str, date: datetime.date):
         new_event: Event = Event(name=name,
                                  description=description,
+                                 location=location,
                                  date=date)
 
         try:
@@ -29,10 +33,11 @@ class EventApi(Resource):
         except Exception:
             db.session.rollback()
             logger.exception('Failed to add event',
-                             extra=dict(submitter=g.current_identity))
+                             extra=dict(submitter=get_jwt_identity()))
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR, error='Something went wrong while trying '
                                                                'to add new event to the system')
 
+    @jwt_required
     @load_schema(PutEventSchema)
     def put(self, event: Event, name: str, description: str, date: datetime.date, **kwargs):
         event.name = name or event.name
@@ -45,10 +50,11 @@ class EventApi(Resource):
         except Exception:
             db.session.rollback()
             logger.exception(f'Failed to update event #{event.id}',
-                             extra=dict(event_id=event.id, submitter=g.current_identity))
+                             extra=dict(event_id=event.id, submitter=get_jwt_identity()))
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR, error=f'Something went wrong while trying '
                                                                f'to update the event #{event.id}')
 
+    @jwt_required
     @load_schema(DeleteEventSchema)
     def delete(self, event: Event, **kwargs):
         try:
@@ -57,6 +63,6 @@ class EventApi(Resource):
         except Exception:
             db.session.rollback()
             logger.exception(f'Failed to delete event #{event.id}',
-                             extra=dict(event_id=event.id, submitter=g.current_identity))
+                             extra=dict(event_id=event.id, submitter=get_jwt_identity()))
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR, error=f'Something went wrong while trying '
                                                                f'to delete the event #{event.id}')

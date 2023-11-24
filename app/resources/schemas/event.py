@@ -14,6 +14,7 @@ class GetEventSchema(BaseSchema):
 class PostEventSchema(BaseSchema):
     name: str = fields.Str(required=True)
     description: str = fields.Str(required=True)
+    location: str = fields.Str(required=True)
     date: datetime.date = fields.Date(required=True)
 
 
