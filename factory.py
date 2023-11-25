@@ -9,6 +9,7 @@ from app.database import db
 from app.logger import logger
 from app.mail import mail
 from app.resources import register_main_blueprint
+from app.socketio import socketio
 from config import get_configuration
 
 
@@ -18,6 +19,7 @@ def create_app() -> Flask:
 
     db.init_app(app)
     mail.init_app(app)
+    socketio.init_app(app)
 
     with app.app_context():
         db.create_all()
