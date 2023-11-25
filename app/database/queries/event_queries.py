@@ -7,6 +7,10 @@ from app.database.models.event_participant import EventParticipant
 from app.database.models.user import User
 
 
+def get_event_by_id(event_id: int) -> Event | None:
+    return db.session.query(Event).filter(Event.id == event_id).scalar()
+
+
 def get_events(sort_by: str | None, order: str | None, location: str | None) -> list[Event]:
     base_query: Query = db.session.query(Event)
 
