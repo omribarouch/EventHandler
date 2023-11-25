@@ -32,10 +32,6 @@ class Event(Model):
         self.location = location
         self.date = date
 
-    @hybridproperty
-    def popularity(self) -> int:
-        return len(self.participants)
-
     def serialize(self) -> dict:
         return {
             'id': self.id,
