@@ -17,7 +17,7 @@ class Event(Model):
     location: Column | str = Column('Location', VARCHAR(100), nullable=False, index=True)
     date: Column | datetime.date = Column('Date', DateTime, nullable=False, index=True)
     creation_time: Column | datetime.date = Column('CreationTime', DateTime,
-                                                   default=datetime.datetime.utcnow(), nullable=False, index=True)
+                                                   default=datetime.datetime.now(), nullable=False, index=True)
     participants: list['User'] = relationship('User', secondary=EventParticipant.__tablename__,
                                               back_populates="events", lazy="select",
                                               overlaps="user,event")
