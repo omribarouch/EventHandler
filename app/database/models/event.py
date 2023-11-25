@@ -2,9 +2,8 @@ import datetime
 
 from sqlalchemy import Column, Integer, VARCHAR, DateTime
 from sqlalchemy.orm import relationship
-from sqlalchemy.util import hybridproperty
 
-from app.database.base import Model
+from app.database import Model
 from app.database.models.event_participant import EventParticipant
 
 

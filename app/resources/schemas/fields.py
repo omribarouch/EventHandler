@@ -5,8 +5,8 @@ from flask_restful import abort
 from marshmallow import fields
 from marshmallow.fields import Field
 
-from app.database.base import Model
-from factory import db
+from app.database import Model
+from app.database import db
 from app.database.models.event import Event
 from app.database.models.user import User
 

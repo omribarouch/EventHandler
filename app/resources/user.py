@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from flask_restful import Resource, abort
 
-from factory import db
+from app.database import db
 from app.database.models.user import User
 from app.logger import logger
 from app.resources.decorators import load_schema

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, VARCHAR, Boolean
 from sqlalchemy.orm import relationship
 
-from app.database.base import Model
+from app.database import Model
 from app.database.models.event_participant import EventParticipant
 
 

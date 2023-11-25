@@ -10,7 +10,7 @@ from sqlalchemy.orm import Query, joinedload
 
 from app.database.models.event_participant import EventParticipant
 from app.database.models.user import User
-from factory import db
+from app.database import db
 from app.database.models.event import Event
 from app.logger import logger
 from app.resources.decorators import load_schema

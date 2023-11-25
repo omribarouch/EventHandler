@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, ForeignKey, VARCHAR
 from sqlalchemy.orm import relationship
 
-from app.database.base import Model
+from app.database import Model
 
 
 class EventParticipant(Model):

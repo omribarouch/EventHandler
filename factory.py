@@ -1,7 +1,8 @@
+from celery import Celery
 from flask import Flask
 from flask_jwt_extended import JWTManager
 
-from app.database.database import db
+from app.database import db
 from app.resources import register_main_blueprint
 from config import get_configuration
 
@@ -24,3 +25,10 @@ def create_app() -> Flask:
     JWTManager(app)
 
     return app
+
+
+def create_celery() -> Celery:
+    celery = Celery(__name__)
+    celery.config_from_object(get_configuration())
+
+    return celery
