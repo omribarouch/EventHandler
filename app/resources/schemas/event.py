@@ -5,7 +5,8 @@ from marshmallow.schema import BaseSchema
 from marshmallow.validate import OneOf
 
 from app.database.models.event import Event
-from app.resources.schemas.fields import EventField
+from app.database.models.user import User
+from app.resources.schemas.fields import EventField, UserField
 
 
 class GetEventsSchema(BaseSchema):
@@ -23,6 +24,7 @@ class PostEventSchema(BaseSchema):
     description: str = fields.Str(required=True)
     location: str = fields.Str(required=True)
     date: datetime = fields.DateTime(required=True)
+    participants: list[User] = fields.List(cls_or_instance=UserField, required=False, load_default=[])
 
 
 class PutEventSchema(GetEventSchema):
@@ -30,6 +32,7 @@ class PutEventSchema(GetEventSchema):
     description: str = fields.Str(load_default=None)
     location: str = fields.Str(load_default=None)
     date: datetime = fields.DateTime(load_default=None)
+    participants: list[User] = fields.List(cls_or_instance=UserField, required=False, load_default=[])
 
 
 class DeleteEventSchema(GetEventSchema):

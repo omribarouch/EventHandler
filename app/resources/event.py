@@ -9,6 +9,7 @@ from app.database.models.socket_event import SocketEvent
 from app.database.models.socket_namespace import SocketNamespace
 from app.database import db
 from app.database.models.event import Event
+from app.database.models.user import User
 from app.database.queries.event_queries import get_events
 from app.logger import logger
 from app.resources.decorators import load_schema
@@ -29,11 +30,12 @@ class EventsApi(Resource):
 
     @jwt_required()
     @load_schema(PostEventSchema)
-    def post(self, name: str, description: str, location: str, date: datetime):
+    def post(self, name: str, description: str, location: str, date: datetime, participants: list[User] = None):
         new_event: Event = Event(name=name,
                                  description=description,
                                  location=location,
-                                 date=date)
+                                 date=date,
+                                 participants=participants)
 
         try:
             db.session.add(new_event)
@@ -55,11 +57,12 @@ class EventApi(Resource):
 
     @jwt_required()
     @load_schema(PutEventSchema)
-    def put(self, event: Event, name: str, description: str, location: str, date: datetime):
+    def put(self, event: Event, name: str, description: str, location: str, date: datetime, participants: list[User] = None):
         event.name = name or event.name
         event.description = description or event.description
         event.location = location or event.location
         event.date = date or event.date
+        event.participants = participants or event.participants
 
         try:
             db.session.commit()

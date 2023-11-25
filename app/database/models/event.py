@@ -25,11 +25,13 @@ class Event(Model):
                  name: str,
                  description: str,
                  location: str,
-                 date: datetime):
+                 date: datetime,
+                 participants: list['User'] = None):
         self.name = name
         self.description = description
         self.location = location
         self.date = date
+        self.participants = participants
 
     def is_notification_required(self):
         return datetime.now() >= Event.date - timedelta(minutes=30) and self.notified
