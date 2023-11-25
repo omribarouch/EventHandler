@@ -11,10 +11,12 @@ from app.resources.schemas.user import PostUserSchema
 
 class UsersApi(Resource):
     @load_schema(PostUserSchema)
-    def post(self, username: str, display_name: str, password: str):
+    def post(self, username: str, display_name: str, password: str, email: str, is_admin: bool):
         new_user: User = User(username=username,
                               display_name=display_name,
-                              password=password)
+                              password=password,
+                              email=email,
+                              is_admin=is_admin)
 
         try:
             db.session.add(new_user)

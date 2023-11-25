@@ -11,4 +11,4 @@ from app.resources.schemas.user_login import UserLoginSchema
 class UserLoginApi(Resource):
     @load_schema(UserLoginSchema)
     def post(self, user: User, **kwargs):
-        return f'Bearer {create_access_token(identity=user.username)}', HTTPStatus.OK
+        return f'JWT {create_access_token(identity=user.username)}', HTTPStatus.OK

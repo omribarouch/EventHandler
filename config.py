@@ -12,6 +12,9 @@ class BaseConfig(object):
     REDIS_URI = 'redis://localhost:6379:0'
 
     # JWT configurations
+    JWT_HEADER_TYPE = 'JWT'
+    JWT_TOKEN_LOCATION = 'headers'
+    JWT_HEADER_NAME = 'Authorization'
     JWT_SECRET_KEY = 'top secret stuff'
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)
 
