@@ -7,12 +7,12 @@ from app.database.models.event import Event
 from app.database.models.user import User
 from config import get_configuration_by_name
 from factory import create_app
+from test.base_flask_test import FlaskInMemoryTest
 
 
-class BasicTestSetup(TestCase):
+class BasicTestSetup(FlaskInMemoryTest):
     def setUp(self):
-        self.app, self.socketio = create_app(get_configuration_by_name('TEST'))
-        self.client = self.app.test_client()
+        super().setUp()
 
         # Add Users
         self.admin_user_username = 'admin'
