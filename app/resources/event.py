@@ -59,8 +59,8 @@ class EventsApi(Resource):
             db.session.rollback()
             logger.exception('Failed to add event',
                              extra=dict(submitter=get_jwt_identity()))
-            abort(HTTPStatus.INTERNAL_SERVER_ERROR, error='Something went wrong while trying '
-                                                          'to add new event to the system')
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, message='Something went wrong while trying '
+                                                            'to add new event to the system')
 
 
 class EventApi(Resource):
@@ -88,8 +88,8 @@ class EventApi(Resource):
             db.session.rollback()
             logger.exception(f'Failed to update event #{event.id}',
                              extra=dict(event_id=event.id, submitter=get_jwt_identity()))
-            abort(HTTPStatus.INTERNAL_SERVER_ERROR, error=f'Something went wrong while trying '
-                                                          f'to update the event #{event.id}')
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, message=f'Something went wrong while trying '
+                                                            f'to update the event #{event.id}')
 
     @jwt_required()
     @load_schema(DeleteEventSchema)
@@ -108,8 +108,8 @@ class EventApi(Resource):
                 db.session.rollback()
             logger.exception(f'Failed to delete event #{event.id}',
                              extra=dict(event_id=event.id, submitter=get_jwt_identity()))
-            abort(HTTPStatus.INTERNAL_SERVER_ERROR, error=f'Something went wrong while trying '
-                                                          f'to delete the event #{event.id}')
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, message=f'Something went wrong while trying '
+                                                            f'to delete the event #{event.id}')
 
 
 class EventSubscriptionApi(Resource):

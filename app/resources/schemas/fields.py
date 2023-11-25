@@ -19,7 +19,7 @@ class ModelField(Generic[F, M]):
         model_identifier: any = F()._deserialize(value, attr, data)
         model: M = db.session.query(M).filter_by(id=model_identifier).scalar()
         if model is None:
-            abort(HTTPStatus.NOT_FOUND, error=f"{M.__class__} #{model_identifier} wasn't found")
+            abort(HTTPStatus.NOT_FOUND, message=f"{M.__class__} #{model_identifier} wasn't found")
 
         return model
 
@@ -30,7 +30,7 @@ class EventField(fields.Integer):
 
         event: Event | None = db.session.query(Event).filter(Event.id == event_id).scalar()
         if event is None:
-            abort(HTTPStatus.NOT_FOUND, error=f"Event #{id} wasn't found")
+            abort(HTTPStatus.NOT_FOUND, message=f"Event #{id} wasn't found")
 
         return event
 
@@ -40,6 +40,6 @@ class UserField(fields.Str):
         username: str = super()._deserialize(value, attr, data)
         user: User | None = db.session.query(User).filter(User.username == username).scalar()
         if user is None:
-            abort(HTTPStatus.NOT_FOUND, error=f"User #{username} wasn't found")
+            abort(HTTPStatus.NOT_FOUND, message=f"User #{username} wasn't found")
 
         return user

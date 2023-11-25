@@ -25,5 +25,5 @@ class UsersApi(Resource):
         except Exception:
             db.session.rollback()
             logger.exception('Failed to add User')
-            abort(HTTPStatus.INTERNAL_SERVER_ERROR, error='Something went wrong while trying '
-                                                          'to add new user to the system')
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, message='Something went wrong while trying '
+                                                            'to add new user to the system')
