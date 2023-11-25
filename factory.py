@@ -1,11 +1,10 @@
 from typing import Type
 
 from celery import Celery
-from flask import Flask, request
+from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
 
-from app.custom_tasks import SqlAlchemyTask
 from app.database import db
 from app.logger import logger
 from app.mail import mail
@@ -34,6 +33,8 @@ def create_app(configuration: Type[BaseConfig] | None = None) -> tuple[Flask, So
 
 
 def create_celery(configuration: Type[BaseConfig] | None = None) -> Celery:
+    from app.custom_tasks import SqlAlchemyTask
+
     celery = Celery(__name__, task_cls=SqlAlchemyTask)
     celery.config_from_object(configuration if configuration else get_configuration())
     celery.conf.update(celery.conf['CELERY_CONFIG'])

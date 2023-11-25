@@ -63,7 +63,7 @@ def get_configuration_by_name(configuration_name: str) -> Type[BaseConfig]:
     return {
         'DEVELOPMENT': DevConfig,
         'PRODUCTION': ProdConfig,
-        'DEFAULT': TestConfig,
+        'DEFAULT': DevConfig,
         'TEST': TestConfig
     }[configuration_name]
 

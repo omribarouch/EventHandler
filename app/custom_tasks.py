@@ -3,9 +3,9 @@ from flask import Flask
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from config import get_configuration
+from app.tasks import celery
 
-engine = create_engine(get_configuration().SQLALCHEMY_DATABASE_URI)
+engine = create_engine(celery.conf.SQLALCHEMY_DATABASE_URI)
 
 
 class SqlAlchemyTask(Task):
