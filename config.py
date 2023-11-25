@@ -56,14 +56,18 @@ class ProdConfig(BaseConfig):
 
 
 class TestConfig(BaseConfig):
-    pass
+    SQLALCHEMY_DATABASE_URI = 'sqlite+pysqlite:///:memory:'
 
 
-def get_configuration() -> Type[BaseConfig]:
-    environment: str = os.getenv('FLASK_CONFIGURATION', 'DEFAULT')
+def get_configuration_by_name(configuration_name: str) -> Type[BaseConfig]:
     return {
         'DEVELOPMENT': DevConfig,
         'PRODUCTION': ProdConfig,
         'DEFAULT': DevConfig,
         'TEST': TestConfig
-    }[environment]
+    }[configuration_name]
+
+
+def get_configuration() -> Type[BaseConfig]:
+    configuration_name: str = os.getenv('FLASK_CONFIGURATION', 'DEFAULT')
+    return get_configuration_by_name(configuration_name)

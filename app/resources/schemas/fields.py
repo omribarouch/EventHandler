@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from typing import TypeVar, Generic
 
-from flask_restful import abort
+from flask_restx import abort
 from marshmallow import fields
 from marshmallow.fields import Field
 

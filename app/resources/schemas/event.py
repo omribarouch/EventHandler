@@ -1,8 +1,6 @@
 import datetime
-from http import HTTPStatus
 
-from flask_restful import abort
-from marshmallow import fields, validates_schema
+from marshmallow import fields
 from marshmallow.schema import BaseSchema
 from marshmallow.validate import OneOf
 
@@ -28,9 +26,9 @@ class PostEventSchema(BaseSchema):
 
 
 class PutEventSchema(GetEventSchema):
-    name: str = fields.Str(default=None)
-    description: str = fields.Str(default=None)
-    date: datetime.date = fields.Date(default=None)
+    name: str = fields.Str(load_default=None)
+    description: str = fields.Str(load_default=None)
+    date: datetime.date = fields.Date(load_default=None)
 
 
 class DeleteEventSchema(GetEventSchema):

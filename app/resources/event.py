@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 from flask import current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask_restful import Resource, abort
+from flask_restx import Resource, abort
 from sqlalchemy import func, Column
 from sqlalchemy.orm import Query, joinedload
 

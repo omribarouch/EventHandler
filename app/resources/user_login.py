@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from flask_jwt_extended import create_access_token
-from flask_restful import Resource
+from flask_restx import Resource
 
 from app.database.models.user import User
 from app.resources.decorators import load_schema

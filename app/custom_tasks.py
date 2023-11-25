@@ -15,7 +15,7 @@ class SqlAlchemyTask(Task):
     def __call__(self, *args, **kwargs):
         if not self._flask_app:
             from factory import create_app
-            self._flask_app = create_app()
+            self._flask_app, socketio = create_app()
 
         with self._flask_app.app_context():
             return self.run(*args, **kwargs)

@@ -11,12 +11,12 @@ from app.logger import logger
 from app.mail import mail
 from app.resources import register_main_blueprint
 from app.socketio import socketio
-from config import get_configuration
+from config import get_configuration, BaseConfig
 
 
-def create_app() -> tuple[Flask, SocketIO]:
+def create_app(configuration: Type[BaseConfig] | None = None) -> tuple[Flask, SocketIO]:
     app = Flask(__name__)
-    app.config.from_object(get_configuration())
+    app.config.from_object(configuration if configuration else get_configuration())
 
     db.init_app(app)
     mail.init_app(app)
@@ -33,9 +33,9 @@ def create_app() -> tuple[Flask, SocketIO]:
     return app, socketio
 
 
-def create_celery() -> Celery:
+def create_celery(configuration: Type[BaseConfig] | None = None) -> Celery:
     celery = Celery(__name__, task_cls=SqlAlchemyTask)
-    celery.config_from_object(get_configuration())
+    celery.config_from_object(configuration if configuration else get_configuration())
     celery.conf.update(celery.conf['CELERY_CONFIG'])
 
     return celery

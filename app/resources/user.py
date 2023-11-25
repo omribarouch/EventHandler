@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from flask_restful import Resource, abort
+from flask_restx import Resource, abort
 
 from app.database import db
 from app.database.models.user import User
