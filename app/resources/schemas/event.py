@@ -29,7 +29,7 @@ class PutEventSchema(GetEventSchema):
     name: str = fields.Str(load_default=None)
     description: str = fields.Str(load_default=None)
     location: str = fields.Str(load_default=None)
-    date: datetime = fields.Date(load_default=None)
+    date: datetime = fields.DateTime(load_default=None)
 
 
 class DeleteEventSchema(GetEventSchema):

@@ -1,9 +1,13 @@
 import os
 from datetime import datetime
 from unittest import TestCase
+from unittest.mock import MagicMock
+
+from flask_jwt_extended import create_access_token
 
 from app.database import db
 from app.database.models.event import Event
+from app.database.models.event_participant import EventParticipant
 from app.database.models.user import User
 from config import get_configuration_by_name
 from factory import create_app
@@ -25,18 +29,22 @@ class BasicTestSetup(FlaskInMemoryTest):
                                display_name=self.admin_user_display_name,
                                email=self.admin_user_email,
                                is_admin=self.admin_user_is_admin)
+        self.admin_access_token: str = create_access_token(identity=self.admin_user_username)
 
         self.first_user = User(username='omby8888',
                                password='very secret',
                                display_name='Omri Barouch',
                                email='omby8888@gmail.com',
                                is_admin=False)
+        self.first_user_access_token: str = create_access_token(identity=self.first_user.username)
 
         self.second_user = User(username='talka4444',
                                 password='very secret stuff',
                                 display_name='Tal Kahila',
                                 email='talka4444@gmail.com',
                                 is_admin=False)
+        self.second_user_access_token: str = create_access_token(identity=self.second_user.username)
+
         db.session.add_all([self.admin_user, self.first_user, self.second_user])
 
         # Add events
@@ -64,6 +72,8 @@ class BasicTestSetup(FlaskInMemoryTest):
         db.session.add_all([self.holiday_event, self.birthday_event, self.derby_match_event])
 
         # Add event participants
-
+        db.session.add_all([EventParticipant(event=self.holiday_event, user=self.first_user),
+                           EventParticipant(event=self.holiday_event, user=self.second_user),
+                           EventParticipant(event=self.derby_match_event, user=self.first_user)])
 
         db.session.commit()

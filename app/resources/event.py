@@ -4,15 +4,12 @@ from http import HTTPStatus
 from flask import current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restx import Resource, abort
-from sqlalchemy import func, Column
-from sqlalchemy.orm import Query, joinedload
 
-from app.database.models.event_participant import EventParticipant
 from app.database.models.socket_event import SocketEvent
 from app.database.models.socket_namespace import SocketNamespace
-from app.database.models.user import User
 from app.database import db
 from app.database.models.event import Event
+from app.database.queries.event_queries import get_events
 from app.logger import logger
 from app.resources.decorators import load_schema
 from app.resources.schemas.event import GetEventSchema, PostEventSchema, PutEventSchema, DeleteEventSchema, \
@@ -24,24 +21,11 @@ class EventsApi(Resource):
     @jwt_required()
     @load_schema(GetEventsSchema)
     def get(self, sort_by: str | None, order: str | None, location: str | None):
-        base_query: Query = db.session.query(Event)
-        logger.debug('hara')
+        events = get_events(sort_by=sort_by,
+                            order=order,
+                            location=location)
 
-        if location:
-            base_query = base_query.filter(Event.location == location)
-
-        if sort_by:
-            sort_column: Column
-            if sort_by == 'popularity':
-                sort_column = func.count(User.username)
-                base_query = base_query.outerjoin(EventParticipant) \
-                    .options(joinedload(Event.participants)).group_by(Event.id)
-            else:
-                sort_column = getattr(Event, sort_by, None)
-
-            base_query = base_query.order_by(getattr(sort_column, order)())
-
-        return [event.serialize() for event in base_query.all()], HTTPStatus.OK
+        return [event.serialize() for event in events], HTTPStatus.OK
 
     @jwt_required()
     @load_schema(PostEventSchema)
