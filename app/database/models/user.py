@@ -12,7 +12,7 @@ class User(Model):
     password: Column | str = Column("Password", VARCHAR(20), nullable=False)
     display_name: Column | str = Column('DisplayName', VARCHAR(30), nullable=False)
     email: Column | str = Column('Email', VARCHAR(30), nullable=False)
-    is_admin: Column | bool = Column('IsAdmin', Boolean, default=False)
+    is_admin: Column | bool = Column('IsAdmin', Boolean, nullable=False, default=False)
     events: list['Event'] = relationship('Event', secondary=EventParticipant.__tablename__,
                                          back_populates="participants", lazy="select",
                                          overlaps="event,user")

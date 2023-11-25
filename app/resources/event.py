@@ -23,6 +23,7 @@ class EventsApi(Resource):
     @load_schema(GetEventsSchema)
     def get(self, sort_by: str | None, order: str | None, location: str | None):
         base_query: Query = db.session.query(Event)
+        logger.debug('hara')
 
         if location:
             base_query = base_query.filter(Event.location == location)

@@ -1,6 +1,5 @@
-import datetime
-
-from sqlalchemy import Column, Integer, VARCHAR, DateTime
+from datetime import datetime, date, timedelta
+from sqlalchemy import Column, Integer, VARCHAR, DateTime, Boolean
 from sqlalchemy.orm import relationship
 
 from app.database import Model
@@ -14,9 +13,10 @@ class Event(Model):
     name: Column | str = Column('Name', VARCHAR(50), nullable=False)
     description: Column | str = Column('Description', VARCHAR(200), nullable=False)
     location: Column | str = Column('Location', VARCHAR(100), nullable=False, index=True)
-    date: Column | datetime.date = Column('Date', DateTime, nullable=False, index=True)
-    creation_time: Column | datetime.date = Column('CreationTime', DateTime,
-                                                   default=datetime.datetime.now(), nullable=False, index=True)
+    date: Column | date = Column('Date', DateTime, nullable=False, index=True)
+    creation_time: Column | date = Column('CreationTime', DateTime, default=datetime.now(),
+                                          nullable=False, index=True)
+    notified: Column | bool = Column('Notified', Boolean, nullable=False, default=False)
     participants: list['User'] = relationship('User', secondary=EventParticipant.__tablename__,
                                               back_populates="events", lazy="select",
                                               overlaps="user,event")
@@ -25,11 +25,14 @@ class Event(Model):
                  name: str,
                  description: str,
                  location: str,
-                 date: datetime.date):
+                 date: date):
         self.name = name
         self.description = description
         self.location = location
         self.date = date
+
+    def is_notification_required(self):
+        return datetime.now() >= Event.date - timedelta(minutes=30) and self.notified
 
     def serialize(self) -> dict:
         return {
