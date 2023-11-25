@@ -26,7 +26,7 @@ class Event(Model):
                  description: str,
                  location: str,
                  date: datetime,
-                 participants: list['User'] = None):
+                 participants: list['User'] = []):
         self.name = name
         self.description = description
         self.location = location

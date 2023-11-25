@@ -30,7 +30,7 @@ class EventsApi(Resource):
 
     @jwt_required()
     @load_schema(PostEventSchema)
-    def post(self, name: str, description: str, location: str, date: datetime, participants: list[User] = None):
+    def post(self, name: str, description: str, location: str, date: datetime, participants: list[User] = []):
         new_event: Event = Event(name=name,
                                  description=description,
                                  location=location,
@@ -57,7 +57,7 @@ class EventApi(Resource):
 
     @jwt_required()
     @load_schema(PutEventSchema)
-    def put(self, event: Event, name: str, description: str, location: str, date: datetime, participants: list[User] = None):
+    def put(self, event: Event, name: str, description: str, location: str, date: datetime, participants: list[User] = []):
         event.name = name or event.name
         event.description = description or event.description
         event.location = location or event.location
