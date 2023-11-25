@@ -119,8 +119,8 @@ class TestEventsApi(BasicTestSetup):
     def test_get_all_events_sort_by_popularity_desc(self):
         expected_status = HTTPStatus.OK.value
         expected_response = [self.holiday_event.serialize(),
-                             self.derby_match_event.serialize(),
-                             self.birthday_event.serialize()]
+                             self.birthday_event.serialize(),
+                             self.derby_match_event.serialize()]
 
         response = self.client.get('/api/events?sort_by=popularity&order=desc',
                                    headers={'Authorization': f'JWT {self.first_user_access_token}'})
