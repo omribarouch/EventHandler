@@ -44,5 +44,5 @@ class Event(Model):
             'location': self.location,
             'date': str(self.date),
             'creationTime': str(self.creation_time),
-            'participants': [participant.serialize() for participant in self.participants]
+            'participants': [participant.display_name for participant in self.participants]
         }

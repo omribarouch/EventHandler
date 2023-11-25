@@ -5,9 +5,11 @@ from http import HTTPStatus
 from flask import current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource, abort
-from sqlalchemy.orm import Query
+from sqlalchemy import func, Column
+from sqlalchemy.orm import Query, joinedload
 
 from app.database.models.event_participant import EventParticipant
+from app.database.models.user import User
 from factory import db
 from app.database.models.event import Event
 from app.logger import logger
@@ -20,14 +22,21 @@ class EventsApi(Resource):
     @jwt_required()
     @load_schema(GetEventsSchema)
     def get(self, sort_by: str | None, order: str | None, location: str | None):
-        base_query: Query = db.session.query(Event).join(EventParticipant) \
-                             .filter(EventParticipant.username == get_jwt_identity())
+        base_query: Query = db.session.query(Event)
 
         if location:
-            base_query.filter(Event.location == location)
+            base_query = base_query.filter(Event.location == location)
 
         if sort_by:
-            base_query.order_by(f'{sort_by} {order}')
+            sort_column: Column
+            if sort_by == 'popularity':
+                sort_column = func.count(User.username)
+                base_query = base_query.outerjoin(EventParticipant) \
+                    .options(joinedload(Event.participants)).group_by(Event.id)
+            else:
+                sort_column = getattr(Event, sort_by, None)
+
+            base_query = base_query.order_by(getattr(sort_column, order)())
 
         return [event.serialize() for event in base_query.all()], HTTPStatus.OK
 

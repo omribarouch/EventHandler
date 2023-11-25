@@ -12,7 +12,7 @@ from app.resources.schemas.fields import EventField
 
 class GetEventsSchema(BaseSchema):
     sort_by: str = fields.Str(required=False, load_default=None, validate=OneOf(['date', 'creation_time', 'popularity']))
-    order: str = fields.Str(required=False, load_default='asc', validate=OneOf(['asc', 'dsc']))
+    order: str = fields.Str(required=False, load_default='asc', validate=OneOf(['asc', 'desc']))
     location: str = fields.Str(required=False, load_default=None)
 
 
