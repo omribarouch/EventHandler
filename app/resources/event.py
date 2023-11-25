@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from http import HTTPStatus
 
 from flask import current_app
@@ -45,7 +45,7 @@ class EventsApi(Resource):
 
     @jwt_required()
     @load_schema(PostEventSchema)
-    def post(self, name: str, description: str, location: str, date: datetime.date):
+    def post(self, name: str, description: str, location: str, date: datetime):
         new_event: Event = Event(name=name,
                                  description=description,
                                  location=location,
@@ -71,9 +71,10 @@ class EventApi(Resource):
 
     @jwt_required()
     @load_schema(PutEventSchema)
-    def put(self, event: Event, name: str, description: str, date: datetime.date, **kwargs):
+    def put(self, event: Event, name: str, description: str, location: str, date: datetime):
         event.name = name or event.name
         event.description = description or event.description
+        event.location = location or event.location
         event.date = date or event.date
 
         try:

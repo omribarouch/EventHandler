@@ -8,5 +8,4 @@ class TestEvent(TestCase):
         # self.unparticipated_event = Event('')/
         pass
 
-    def test_participants_is_empty_array(self):
-        
+    # def test_participants_is_empty_array(self):

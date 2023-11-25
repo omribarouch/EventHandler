@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from marshmallow import fields
 from marshmallow.schema import BaseSchema
@@ -22,13 +22,14 @@ class PostEventSchema(BaseSchema):
     name: str = fields.Str(required=True)
     description: str = fields.Str(required=True)
     location: str = fields.Str(required=True)
-    date: datetime.date = fields.DateTime(required=True)
+    date: datetime = fields.DateTime(required=True)
 
 
 class PutEventSchema(GetEventSchema):
     name: str = fields.Str(load_default=None)
     description: str = fields.Str(load_default=None)
-    date: datetime.date = fields.Date(load_default=None)
+    location: str = fields.Str(load_default=None)
+    date: datetime = fields.Date(load_default=None)
 
 
 class DeleteEventSchema(GetEventSchema):
