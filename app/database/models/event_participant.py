@@ -1,9 +1,10 @@
 from sqlalchemy import Column, Integer, ForeignKey, VARCHAR
 from sqlalchemy.orm import relationship
-from factory import db
+
+from app.database.base import Model
 
 
-class EventParticipant(db.Model):
+class EventParticipant(Model):
     __tablename__ = 'EventParticipant'
 
     username: Column | str = Column('Username', VARCHAR(20), ForeignKey('User.Username'), primary_key=True)

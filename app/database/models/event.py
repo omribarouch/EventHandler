@@ -4,11 +4,11 @@ from sqlalchemy import Column, Integer, VARCHAR, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.util import hybridproperty
 
+from app.database.base import Model
 from app.database.models.event_participant import EventParticipant
-from factory import db
 
 
-class Event(db.Model):
+class Event(Model):
     __tablename__: str = 'Event'
 
     id: Column | int = Column('ID', Integer, primary_key=True, autoincrement=True)

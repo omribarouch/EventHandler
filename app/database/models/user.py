@@ -3,10 +3,9 @@ from sqlalchemy.orm import relationship
 
 from app.database.base import Model
 from app.database.models.event_participant import EventParticipant
-from factory import db
 
 
-class User(db.Model):
+class User(Model):
     __tablename__ = 'User'
 
     username: Column | str = Column('Username', VARCHAR(20), primary_key=True)
