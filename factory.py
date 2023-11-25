@@ -1,8 +1,9 @@
 from typing import Type
 
 from celery import Celery
-from flask import Flask
+from flask import Flask, request
 from flask_jwt_extended import JWTManager
+from flask_socketio import SocketIO
 
 from app.custom_tasks import SqlAlchemyTask
 from app.database import db
@@ -13,7 +14,7 @@ from app.socketio import socketio
 from config import get_configuration
 
 
-def create_app() -> Flask:
+def create_app() -> tuple[Flask, SocketIO]:
     app = Flask(__name__)
     app.config.from_object(get_configuration())
 
@@ -29,7 +30,7 @@ def create_app() -> Flask:
 
     JWTManager(app)
 
-    return app
+    return app, socketio
 
 
 def create_celery() -> Celery:

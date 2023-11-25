@@ -6,6 +6,7 @@ def register_main_blueprint(app: Flask) -> None:
     from app.resources.index import IndexApi
     from app.resources.event import EventApi
     from app.resources.event import EventsApi
+    from app.resources.event import EventSubscriptionApi
     from app.resources.user import UsersApi
     from app.resources.user_login import UserLoginApi
 
@@ -15,6 +16,7 @@ def register_main_blueprint(app: Flask) -> None:
 
     api.add_resource(IndexApi, '/')
     api.add_resource(EventApi, '/events/<int:id>')
+    api.add_resource(EventSubscriptionApi, '/events/<int:id>/subscribe')
     api.add_resource(EventsApi, '/events')
     api.add_resource(UsersApi, '/users')
     api.add_resource(UserLoginApi, '/login')

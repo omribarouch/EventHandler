@@ -17,7 +17,7 @@ class GetEventsSchema(BaseSchema):
 
 
 class GetEventSchema(BaseSchema):
-    event: Event = EventField(data_key='id', required=True, )
+    event: Event = EventField(data_key='id', required=True)
 
 
 class PostEventSchema(BaseSchema):
@@ -28,7 +28,6 @@ class PostEventSchema(BaseSchema):
 
 
 class PutEventSchema(GetEventSchema):
-    event: Event = EventField(data_key='id', required=True)
     name: str = fields.Str(default=None)
     description: str = fields.Str(default=None)
     date: datetime.date = fields.Date(default=None)
