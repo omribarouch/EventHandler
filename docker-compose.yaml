@@ -1,0 +1,47 @@
+version: '3'
+
+x-common-variables: &common-variables
+  - SQLALCHEMY_DATABASE_URI=postgresql://postgres:secret@localhost:5432/postgres
+  - REDIS_URL=redis://localhost:6379
+  - MAIL_USERNAME=omby8888@gmail.com
+  - MAIL_PASSWORD=yrpv elzp bgix dkpf
+
+services:
+  backend:
+    image: omribar/event-handler:1.0.0
+    environment: *common-variables
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+      - postgres
+
+  celery-beat:
+    image: omribar/event-handler:1.0.0
+    environment: *common-variables
+    depends_on:
+      - redis
+      - postgres
+
+  celery-worker:
+    image: omribar/event-handler:1.0.0
+    environment: *common-variables
+    depends_on:
+      - redis
+      - postgres
+
+  redis:
+    image: "redis:latest"
+    volumes:
+      - redis_data:/data
+
+  postgres:
+    image: "postgres:11.22-bullseye"
+    environment:
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  redis_data:
+  postgres_data:
